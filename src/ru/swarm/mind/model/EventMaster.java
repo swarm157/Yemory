@@ -30,7 +30,7 @@ public class EventMaster implements Cloneable, Serializable {
      */
     public boolean save(File file) {
         if (file.isDirectory()) return false;
-        if (!file.canWrite()) return false;
+        //if (!file.canWrite()) return false;
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file));
             outputStream.writeObject(this);

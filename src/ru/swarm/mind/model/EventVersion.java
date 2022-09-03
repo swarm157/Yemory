@@ -25,6 +25,11 @@ public class EventVersion implements Serializable, Cloneable {
         this.data = data; this.name = name;
     }
 
+    public EventVersion(String name) {
+        this.name = name;
+        data = new ArrayList<>();
+    }
+
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return (EventVersion)super.clone();
