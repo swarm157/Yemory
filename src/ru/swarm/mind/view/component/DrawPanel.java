@@ -28,7 +28,8 @@ public class Draw extends JPanel {
             @Override
             public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
                 theZoom +=((float)mouseWheelEvent.getWheelRotation())/2;
-
+                if (theZoom==0) theZoom=0.1f;
+                if (theZoom<0) theZoom*=-1;
                 repaint();
 
             }
@@ -36,12 +37,19 @@ public class Draw extends JPanel {
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent mouseEvent) {
-
+                if(choosed==null) {
                 if (prevPoint==null)
                     prevPoint = mouseEvent.getPoint();
                 Point2D current = mouseEvent.getPoint();
                 speed.setLocation(speed.getX()+(current.getX()-prevPoint.getX())/theZoom, speed.getY()+(current.getY()-prevPoint.getY())/theZoom);
                 prevPoint = current;
+                } else {
+                    float x = ((float)mouseEvent.getPoint().getX()-xCam)/theZoom*2-((float) DEFAULT_RADIUS);
+                    float y = ((float)mouseEvent.getPoint().getY()-yCam)/theZoom*2-((float) DEFAULT_RADIUS);
+                    choosed.setPoint(new Point2D.Float(x, y));
+                    MainActivity.East.xPos.setText(String.valueOf(choosed.getPoint().getX()));
+                    MainActivity.East.yPos.setText(String.valueOf(choosed.getPoint().getY()));
+                }
                 repaint();
             }
 
@@ -119,7 +127,18 @@ public class Draw extends JPanel {
             choosed = new Memory("", new Point2D.Float(x, y));
             Common.data.getVersions().get(Common.version_loaded).getData().
                     add(choosed);
-            click=null;
+            {
+                JTextArea area = MainActivity.East.area;
+                MainActivity.East.name.setText(choosed.getName());
+                MainActivity.East.xPos.setText(String.valueOf(choosed.getPoint().getX()));
+                MainActivity.East.yPos.setText(String.valueOf(choosed.getPoint().getY()));
+                MainActivity.East.color.setBackground(choosed.getColor());
+                JList<String> tags = MainActivity.East.tags;
+                tags.setListData(choosed.getTags().toArray(new String[choosed.getTags().size()]));
+                area.setText(choosed.getDescription());
+                click = null;
+            }
+            MainActivity.West.update();
         }
         for (Memory memory : Common.data.getVersions().get(Common.version_loaded).getData()) {
             float radius = DEFAULT_RADIUS* theZoom+(memory.getDescription().length()+memory.getName().length())/150;
@@ -130,6 +149,7 @@ public class Draw extends JPanel {
                 prevChoosed = choosed;
                 choosed = null;
                 click = null;
+
                 if (prevChoosed!=null) {
                     prevChoosed.setName(MainActivity.East.name.getText());
                     JTextArea area = MainActivity.East.area;
