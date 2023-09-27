@@ -2,6 +2,8 @@ package ru.swarm.mind.model;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.beans.Transient;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -13,6 +15,9 @@ import java.util.Objects;
  * программой набора инструментов.
  */
 public class Memory implements Serializable, Cloneable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
     /**
      * Служит в качестве заглавия воспоминания
      */
@@ -38,12 +43,65 @@ public class Memory implements Serializable, Cloneable {
      */
     Color color;
 
-    public Memory(String name, ArrayList<String> tags, String description, Point2D point, Color color) {
+    public Image getImg() {
+        return img;
+    }
+
+    public void setImg(Image img) {
+        this.img = img;
+    }
+
+    public Memory(String name, ArrayList<String> tags, String description, Point2D point, Color color, Image img, ArrayList<Memory> linkedMemories) {
         this.name = name;
         this.tags = tags;
         this.description = description;
         this.point = point;
         this.color = color;
+        this.img = img;
+        this.linkedMemories = linkedMemories;
+    }
+
+
+    transient Image img;
+
+    public Image getArt() {
+        return art;
+    }
+
+    public void setArt(Image art) {
+        this.art = art;
+    }
+
+    public Memory(String name, ArrayList<String> tags, String description, Point2D point, Color color, Image img, Image art, ArrayList<Memory> linkedMemories) {
+        this.name = name;
+        this.tags = tags;
+        this.description = description;
+        this.point = point;
+        this.color = color;
+        this.img = img;
+        this.art = art;
+        this.linkedMemories = linkedMemories;
+    }
+
+    Image art;
+
+    public ArrayList<Memory> getLinkedMemories() {
+        return linkedMemories;
+    }
+
+    public void setLinkedMemories(ArrayList<Memory> linkedMemories) {
+        this.linkedMemories = linkedMemories;
+    }
+
+    ArrayList<Memory> linkedMemories;
+
+    public Memory(String name, ArrayList<String> tags, String description, Point2D point, Color color, ArrayList<Memory> linkedMemories) {
+        this.name = name;
+        this.tags = tags;
+        this.description = description;
+        this.point = point;
+        this.color = color;
+        this.linkedMemories = linkedMemories;
     }
 
     public Memory(String name, Point2D point) {
@@ -52,6 +110,7 @@ public class Memory implements Serializable, Cloneable {
         color = Color.GRAY;
         this.point = point;
         this.name = name;
+        this.linkedMemories = new ArrayList<>();
     }
 
     @Override
@@ -73,7 +132,7 @@ public class Memory implements Serializable, Cloneable {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return (Memory)super.clone();
     }
 
@@ -116,6 +175,35 @@ public class Memory implements Serializable, Cloneable {
 
     public Color getColor() {
         return color;
+    }
+
+    public String getTagProperty(String name) {
+        ArrayList<String> list = tags;
+        for (String element : list) {
+            if (element.replace("\n", "").startsWith(name)) {
+                return element.replace("\n", "").replaceFirst(name, "");
+            }
+        }
+        return "";
+    }
+
+    public void setTagProperty(String name, String value) {
+        ArrayList<String> list = tags;
+        boolean found = false;
+        for (int i = 0; i < list.size(); i++) {
+            String element = list.get(i);
+            if (element.replace("\n", "").startsWith(name)) {
+                found = true;
+                if (value != null) {
+                    int index = element.indexOf(name);
+                    String newValue = element.substring(0, index + name.length()) + value;
+                    list.set(i, newValue);
+                }
+            }
+        }
+        if (!found && value != null) {
+            list.add(name + value);
+        }
     }
 
     public void setColor(Color color) {

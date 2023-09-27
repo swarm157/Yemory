@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Yemory:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Yemory_jar</output-path>
+    <root id="archive" name="Yemory.jar">
+      <element id="module-output" name="Yemory" />
+    </root>
+  </artifact>
+</component>

@@ -2,33 +2,48 @@ package ru.swarm.mind.control;
 
 import ru.swarm.mind.Common;
 import ru.swarm.mind.model.Memory;
-import ru.swarm.mind.view.component.Draw;
 import ru.swarm.mind.view.activity.MainActivity;
+import ru.swarm.mind.view.component.Camera;
+import ru.swarm.mind.view.component.DrawPanel;
+import ru.swarm.mind.view.component.GroupMoving;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
-import static ru.swarm.mind.view.component.Draw.*;
+import static ru.swarm.mind.Common.*;
+import static ru.swarm.mind.view.component.Camera.*;
+import static ru.swarm.mind.view.component.DrawPanel.computeRadius;
+import static ru.swarm.mind.view.component.DrawPanel.found;
 
-public class DrawAction extends AbstractAction {
+
+public class DrawPerTick extends AbstractAction {
+    int i = 0;
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        if (Draw.speed.getX()<0.25f& Draw.speed.getX()>-0.25f) {
-            Draw.speed.setLocation(0f, 0f);
-        } else {
-            if (Draw.speed.getX()<0) Draw.speed.setLocation(Draw.speed.getX()/1.15, Draw.speed.getY());
-            if (Draw.speed.getX()>0) Draw.speed.setLocation(Draw.speed.getX()/1.15, Draw.speed.getY());
-            if (Draw.speed.getY()<0) Draw.speed.setLocation(Draw.speed.getX(), Draw.speed.getY()/1.15);
-            if (Draw.speed.getY()>0) Draw.speed.setLocation(Draw.speed.getX(), Draw.speed.getY()/1.15);
+        compute();
+        GroupMoving.compute();
+
+        MainActivity.info.setText("information: x="+ xCam+" y="+ yCam+" zoom="+ zoom +"; memories="+Common.data.getVersions().get(Common.version_loaded).getData().size()+" versions="+Common.data.getVersions().size());
+
+        i++;
+        if (i>300) {
+            i=0;
+
+
+            ArrayList<Memory> toErasing = new ArrayList<>();
+            for (Memory memory : data.getVersions().get(version_loaded).getData()) {
+                for (Memory link : memory.getLinkedMemories()) {
+                    if (!data.getVersions().get(version_loaded).getData().contains(link)) {
+                        toErasing.add(link);
+                    }
+                }
+            }
+            data.getVersions().get(version_loaded).getData().removeAll(toErasing);
         }
-        if (Draw.speed.getX()>10) Draw.speed.setLocation(9, Draw.speed.getY());
-        if (Draw.speed.getX()<-10) Draw.speed.setLocation(-9, Draw.speed.getY());
-        if (Draw.speed.getY()>10) Draw.speed.setLocation(Draw.speed.getX(), 9);
-        if (Draw.speed.getY()<-10) Draw.speed.setLocation(Draw.speed.getX(), -9);
-        xCam+=Draw.speed.getX();
-        yCam+=Draw.speed.getY();
-        Memory memory = Common.data.getVersions().get(Common.version_loaded).getData().get(0);
-        MainActivity.info.setText("information: x="+ xCam+" y="+ yCam+" zoom="+ theZoom+"; memories="+Common.data.getVersions().get(Common.version_loaded).getData().size()+" versions="+Common.data.getVersions().size());
+
         Common.window.getRootPane().repaint();
     }
 }

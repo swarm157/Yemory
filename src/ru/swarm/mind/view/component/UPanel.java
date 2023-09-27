@@ -1,15 +1,17 @@
 package ru.swarm.mind.view.component;
 
+import ru.swarm.mind.Common;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
+import static ru.swarm.mind.Common.Colors.border_color;
+
 public class UPanel extends JPanel {
-    public static final Color color = new Color(70, 57,69);
-    public static final Color border_color = new Color(25, 10,25);
     {
         setBorder(new LineBorder(border_color, 1));
-        setBackground(color);
+        setBackground(Common.Colors.bgPanelColor);
     }
     public void add(JComponent... components) {
         for(JComponent component : components) {

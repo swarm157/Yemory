@@ -1,19 +1,18 @@
 package ru.swarm.mind.view.component;
 
+import ru.swarm.mind.Common;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-import java.awt.*;
 
-import static ru.swarm.mind.Common.textColor;
+import static ru.swarm.mind.Common.Colors.textColor;
 
 public class UButton extends JButton {
-    public static final Color color = new Color(55, 30,50);
-    public static final Color border_color = new Color(30, 10,25);
 
     {
-        setBackground(color);
+        setBackground(Common.Colors.color);
         setForeground(textColor);
-        setBorder(new LineBorder(border_color, 2));
+        setBorder(new LineBorder(Common.Colors.border_color, 2));
 
     }
 

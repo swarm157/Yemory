@@ -1,5 +1,6 @@
 package ru.swarm.mind.model;
 
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -15,6 +16,17 @@ public class EventMaster implements Cloneable, Serializable {
      * Весь класс существует, только ради этого контейнера.
      */
     ArrayList<EventVersion> versions;
+
+    public ArrayList<Color> getFavoriteColors() {
+        return favoriteColors;
+    }
+
+    public void setFavoriteColors(ArrayList<Color> favoriteColors) {
+        this.favoriteColors = favoriteColors;
+    }
+
+    ArrayList<Color> favoriteColors;
+
 
     public EventMaster(ArrayList<EventVersion> versions) {
         this.versions = versions;
@@ -79,7 +91,7 @@ public class EventMaster implements Cloneable, Serializable {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
